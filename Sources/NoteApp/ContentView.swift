@@ -26,7 +26,12 @@ struct ContentView: View {
       List(selection: $selectedFolderID) {
         Section("iCloud") {
           ForEach(folders) { folder in
-            Label(folder.name, systemImage: "folder")
+            Label {
+              Text(folder.name)
+            } icon: {
+              Image(systemName: "folder")
+                .foregroundStyle(.yellow)
+            }
               .tag(folder.id)
           }
           .onDelete { folders.remove(atOffsets: $0) }
