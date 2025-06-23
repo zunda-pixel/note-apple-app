@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
   @State var text = ""
+  @State var isPresentedNewNoteView = false
   @State var selectedFolderID: Folder.ID?
   @State var selectedNoteID: Note.ID?
   @State var folders: [Folder] = [
@@ -48,12 +49,28 @@ struct ContentView: View {
       }
       .searchable(text: $text)
       .navigationTitle("Folders")
+      .sheet(isPresented: $isPresentedNewNoteView) {
+        NewNoteView()
+      }
       .toolbar {
+        ToolbarItem(placement: .topBarTrailing) {
+          Button("New Folder", systemImage: "folder.badge.plus") {
+            
+          }
+        }
         #if !os(macOS)
         ToolbarItem(placement: .topBarTrailing) {
           EditButton()
         }
         #endif
+        
+        DefaultToolbarItem(kind: .search, placement: .bottomBar)
+        ToolbarSpacer(.fixed, placement: .bottomBar)
+        ToolbarItem(placement: .bottomBar) {
+          Button("New Note", systemImage: "square.and.pencil") {
+            isPresentedNewNoteView.toggle()
+          }
+        }
       }
     } content: {
       if let selectedFolderID, let folder = folders.first(where: { $0.id == selectedFolderID }) {
