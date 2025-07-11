@@ -1,10 +1,46 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Add Folder" : {
+
+    },
+    "Convert to Smart Folder" : {
+
+    },
+    "Default (On)" : {
+
+    },
+    "Delete" : {
+
+    },
     "Folders" : {
 
     },
+    "Group By Date" : {
+
+    },
     "iCloud" : {
+
+    },
+    "Move This Folder" : {
+
+    },
+    "New Folder" : {
+
+    },
+    "New Note" : {
+
+    },
+    "Off" : {
+
+    },
+    "On" : {
+
+    },
+    "Rename" : {
+
+    },
+    "Share Folder" : {
 
     },
     "Tags" : {

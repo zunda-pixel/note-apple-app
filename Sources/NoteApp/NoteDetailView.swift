@@ -10,19 +10,24 @@ struct NoteDetailView: View {
     TextEditor(text: $note.content)
       .safeAreaInset(edge: .top) {
         Text(note.updatedDate, format: .dateTime)
+          .foregroundStyle(.secondary)
+          .font(.callout)
       }
       .toolbar {
-        ToolbarItem(placement: .navigation) {
-          ShareLink(
-            item: note,
-            preview: SharePreview(
-              note.title,
-              image: Image(systemName: "star")
-            )
-          )
-        }
-        
-        ToolbarItemGroup(placement: .navigation) {
+        #if os(macOS)
+        let toolbarPlacement: ToolbarItemPlacement = .secondaryAction
+        #else
+        let toolbarPlacement: ToolbarItemPlacement = .bottomBar
+        #endif
+        ToolbarItemGroup(placement: toolbarPlacement) {
+          #if os(macOS)
+          Button {
+            
+          } label: {
+            Image(systemName: "textformat")
+          }
+          #endif
+          
           Button {
             
           } label: {
@@ -47,11 +52,40 @@ struct NoteDetailView: View {
             Image(systemName: "siri")
           }
         }
-        ToolbarItemGroup(placement: .navigation) {
+        
+        ToolbarSpacer(.flexible, placement: toolbarPlacement)
+        
+        #if os(macOS)
+        let newNotePlacement: ToolbarItemPlacement = .navigation
+        #else
+        let newNotePlacement: ToolbarItemPlacement = .bottomBar
+        #endif
+        ToolbarItemGroup(placement: newNotePlacement) {
           Button {
             
           } label: {
             Image(systemName: "square.and.pencil")
+          }
+        }
+        
+        #if os(macOS)
+        let shareToolPlacement: ToolbarItemPlacement = .primaryAction
+        #else
+        let shareToolPlacement: ToolbarItemPlacement = .topBarTrailing
+        #endif
+        
+        ToolbarItemGroup(placement: shareToolPlacement) {
+          ShareLink(
+            item: note,
+            preview: SharePreview(
+              note.title,
+              image: Image(systemName: "star")
+            )
+          )
+          Button {
+            
+          } label: {
+            Image(systemName: "ellipsis")
           }
         }
       }
