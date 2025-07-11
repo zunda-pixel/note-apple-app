@@ -1,12 +1,14 @@
 import Foundation
 import CoreTransferable
 import Observation
+import SwiftUI
 
 @Observable
 final class Folder: Identifiable, Hashable, Codable, Transferable {
   var id = UUID()
   var name: String
   var notes: [Note]
+  var groupByDateMode: GroupByDateMode = .default
   
   init(
     name: String,
@@ -46,4 +48,18 @@ extension Folder {
       .init(title: "Title6", subTitle: "SubTitle6", content: "Content6"),
     ]
   )
+}
+
+enum GroupByDateMode: CaseIterable, Codable {
+  case `default`
+  case on
+  case off
+  
+  var label: LocalizedStringKey {
+    switch self {
+    case .default: "Default (On)"
+    case .on: "On"
+    case .off: "Off"
+    }
+  }
 }

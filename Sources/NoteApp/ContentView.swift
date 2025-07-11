@@ -116,15 +116,15 @@ struct FolderCell: View {
             }
             @Bindable var folder = folder
             
-            Picker(selection: $folder.displayMode) {
-              ForEach(DisplayMode.allCases, id: \.self) { displayMode in
-                Text(displayMode.label)
-                  .tag(displayMode)
+            Picker(selection: $folder.groupByDateMode) {
+              ForEach(GroupByDateMode.allCases, id: \.self) { mode in
+                Text(mode.label)
+                  .tag(mode)
               }
             } label: {
               Label {
                 Text("Group By Date")
-                Text(folder.displayMode.label)
+                Text(folder.groupByDateMode.label)
                   .foregroundStyle(.secondary)
               } icon: {
                 Image(systemName: "calendar")
