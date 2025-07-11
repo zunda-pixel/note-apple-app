@@ -5,6 +5,7 @@ struct ContentView: View {
   @State var isPresentedNewNoteView = false
   @State var selectedFolderID: Folder.ID?
   @State var selectedNoteID: Note.ID?
+  @State var isExpandedICloudSection = true
   @State var folders: [Folder] = [
     .init(
       name: "Folder1",
@@ -25,17 +26,11 @@ struct ContentView: View {
   var body: some View {
     NavigationSplitView {
       List(selection: $selectedFolderID) {
-        Section("iCloud") {
+        Section("iCloud", isExpanded: $isExpandedICloudSection) {
           ForEach(folders) { folder in
-            Label {
-              Text(folder.name)
-            } icon: {
-              Image(systemName: "folder")
-                .foregroundStyle(.yellow)
-            }
+            FolderCell(folder: folder)
               .tag(folder.id)
           }
-          .onDelete { folders.remove(atOffsets: $0) }
           .onMove { folders.move(fromOffsets: $0, toOffset: $1) }
         }
         
@@ -53,16 +48,15 @@ struct ContentView: View {
         NewNoteView()
       }
       .toolbar {
+        #if !os(macOS)
         ToolbarItem(placement: .topBarTrailing) {
           Button("New Folder", systemImage: "folder.badge.plus") {
             
           }
         }
-        #if !os(macOS)
         ToolbarItem(placement: .topBarTrailing) {
           EditButton()
         }
-        #endif
         
         DefaultToolbarItem(kind: .search, placement: .bottomBar)
         ToolbarSpacer(.fixed, placement: .bottomBar)
@@ -71,6 +65,7 @@ struct ContentView: View {
             isPresentedNewNoteView.toggle()
           }
         }
+        #endif
       }
     } content: {
       if let selectedFolderID, let folder = folders.first(where: { $0.id == selectedFolderID }) {
@@ -81,6 +76,9 @@ struct ContentView: View {
         NoteDetailView(note: note)
       }
     }
+    #if os(macOS)
+    .tint(.yellow)
+    #endif
   }
 }
 
@@ -88,3 +86,74 @@ struct ContentView: View {
   ContentView()
 }
 
+struct FolderCell: View {
+  #if !os(macOS)
+  @Environment(\.editMode) var editMode
+  #endif
+  let folder: Folder
+  
+  var body: some View {
+    Label {
+      HStack {
+        Text(folder.name)
+        
+        Spacer()
+        
+        #if !os(macOS)
+        if self.editMode?.wrappedValue == .active {
+          Menu {
+            Button("Share Folder", systemImage: "person.crop.circle.badge.plus") {
+              
+            }
+            Button("Add Folder", systemImage: "folder.badge.plus") {
+              
+            }
+            Button("Move This Folder", systemImage: "folder") {
+              
+            }
+            Button("Rename", systemImage: "pencil") {
+              
+            }
+            @Bindable var folder = folder
+            
+            Picker(selection: $folder.displayMode) {
+              ForEach(DisplayMode.allCases, id: \.self) { displayMode in
+                Text(displayMode.label)
+                  .tag(displayMode)
+              }
+            } label: {
+              Label {
+                Text("Group By Date")
+                Text(folder.displayMode.label)
+                  .foregroundStyle(.secondary)
+              } icon: {
+                Image(systemName: "calendar")
+              }
+            }
+            .pickerStyle(.menu)
+
+            Button("Delete", systemImage: "trash", role: .destructive) {
+              
+            }
+            
+            Divider()
+            
+            Button("Convert to Smart Folder", systemImage: "gearshape") {
+              
+            }
+          } label: {
+            Image(systemName: "ellipsis.circle")
+              .foregroundStyle(.yellow)
+          }
+          .buttonStyle(.borderless)
+        }
+        #endif
+      }
+    } icon: {
+      Image(systemName: "folder")
+      #if !os(macOS)
+        .foregroundStyle(.yellow)
+      #endif
+    }
+  }
+}
